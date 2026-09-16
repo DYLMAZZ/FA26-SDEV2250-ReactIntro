@@ -1,3 +1,4 @@
+const title = 'React';
 function App() {
  return (
  <div>
