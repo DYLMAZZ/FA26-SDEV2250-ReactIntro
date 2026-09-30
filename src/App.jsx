@@ -6,6 +6,8 @@ const App = () => {
     { name: "Item 1", quantity: 0, cost: 0, total: 0 },
   ]);
 
+  const [taxRate, setTaxRate] = React.useState(0);
+
   const handleItemChange = (index, field, value) => {
     const updatedItems = [...items];
     updatedItems[index][field] = value;
@@ -19,12 +21,25 @@ const App = () => {
     setItems(updatedItems);
   };
 
+  // Calculate subtotal
+  const calculateSubtotal = () => {
+    return items.reduce((subtotal, item) => {
+      return subtotal + item.total;
+    }, 0);
+  };
+
+  // Calculate tax
+  const calculateTax = () => {
+    const subtotal = calculateSubtotal();
+    return subtotal * (taxRate / 100);
+  };
+
+  // Calculate final total
   const calculateInvoiceTotal = () => {
-    let total = 0.00;
-    for (let i=0; i<items.length; i++) {
-      total += items[i].total;
-    }
-    return total;
+    const subtotal = calculateSubtotal();
+    const tax = calculateTax();
+
+    return subtotal + tax;
   };
 
 
@@ -48,18 +63,28 @@ const App = () => {
               onChange={(field, value) => handleItemChange(index, field, value)}
             />
           ))}
-
         </tbody>
         <tfoot>
           <tr>
             <td colSpan="2"></td>
             <td>Sub Total:</td>
-            <td>$</td>
+            <td>${calculateSubtotal().toFixed(2)}</td>
           </tr>
           <tr>
             <td colSpan="2"></td>
-            <td>Tax: %</td>
-            <td>$</td>
+            <td>
+              Tax:
+              <input
+                type="number"
+                value={taxRate}
+                onChange={(e) =>
+                  setTaxRate(Number(e.target.value) || 0)
+                }
+                style={{ width: "50px", marginLeft: "5px" }}
+              />
+              %
+            </td>
+            <td>${calculateTax().toFixed(2)}</td>
           </tr>
           <tr>
             <td colSpan="2"></td>
