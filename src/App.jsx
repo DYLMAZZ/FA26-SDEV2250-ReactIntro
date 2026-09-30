@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 const App = () => {
-
   const [items, setItems] = React.useState([
     { name: "Item 1", quantity: 0, cost: 0, total: 0 },
   ]);
@@ -10,6 +9,12 @@ const App = () => {
 
   const handleItemChange = (index, field, value) => {
     const updatedItems = [...items];
+
+    // Make sure numeric fields always contain a valid number.
+    if (field === "quantity" || field === "cost") {
+      value = Number.isFinite(value) ? value : 0;
+    }
+
     updatedItems[index][field] = value;
 
     // Calculate total for each line
@@ -34,7 +39,7 @@ const App = () => {
   // Calculate subtotal
   const calculateSubtotal = () => {
     return items.reduce((subtotal, item) => {
-      return subtotal + item.total;
+      return subtotal + (Number(item.total) || 0);
     }, 0);
   };
 
@@ -132,7 +137,7 @@ const LineItem = (props) => {
         placeholder="Quantity"
         value={props.item.quantity}
         onChange={(e) =>
-          props.onChange("quantity",parseFloat(e.target.value))} />
+          props.onChange("quantity",parseFloat(e.target.value) || 0)} />
       </td>
       <td>
       <input
@@ -140,10 +145,10 @@ const LineItem = (props) => {
         placeholder="Cost"
         value={props.item.cost}
         onChange={(e) =>
-          props.onChange("cost",parseFloat(e.target.value))} />
+          props.onChange("cost",parseFloat(e.target.value) || 0)} />
       </td>
       <td>
-        ${props.item.total}
+        ${Number(props.item.total || 0).toFixed(2)}
       </td>
     </tr>
   )
