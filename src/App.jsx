@@ -21,6 +21,16 @@ const App = () => {
     setItems(updatedItems);
   };
 
+
+  // Add a new row
+  const addItem = () => {
+    setItems([
+      ...items,
+      { name: "", quantity: 0, cost: 0, total: 0 }
+    ]);
+  };
+
+
   // Calculate subtotal
   const calculateSubtotal = () => {
     return items.reduce((subtotal, item) => {
@@ -65,6 +75,13 @@ const App = () => {
           ))}
         </tbody>
         <tfoot>
+          <tr>
+            <td colSpan="4">
+              <button onClick={addItem}>
+                Add Item
+              </button>
+            </td>
+          </tr>
           <tr>
             <td colSpan="2"></td>
             <td>Sub Total:</td>
